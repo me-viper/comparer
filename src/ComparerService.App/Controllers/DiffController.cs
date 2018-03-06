@@ -95,14 +95,21 @@ namespace ComparerService.App.Controllers
 
             try
             {
-                loggingScope = _logger.BeginScope("ComparisonID {id}", id);
+                loggingScope = _logger.BeginScope("ComparisonID {0}", id);
+                _logger.LogInformation("Comparing contents.");
 
                 var content = await _contentRepository.GetContent(id).ConfigureAwait(false);
 
                 if (content == null)
+                {
+                    _logger.LogInformation("Nothing to compare.");
                     return NoContent();
+                }
 
                 var diffResult = _diffService.SimpleDiff(content.Left, content.Right);
+
+                _logger.LogDebug("Comparision result: {0}", diffResult.ToString());
+
                 var result = new DiffResultDto { Id = id, DiffType = diffResult.Type, Diffs = diffResult.Diffs };
 
                 return new ObjectResult(result);
@@ -119,7 +126,7 @@ namespace ComparerService.App.Controllers
 
             try
             {
-                loggingScope = _logger.BeginScope("ComparisonID: {id}; Side: {side}", id, side);
+                loggingScope = _logger.BeginScope("ComparisonID: {0}; Side: {2}", id, side);
                 _logger.LogInformation("Setting comparison content");
 
                 byte[] buffer;
@@ -130,7 +137,7 @@ namespace ComparerService.App.Controllers
                 }
                 catch (FormatException ex)
                 {
-                    _logger.LogError(ex, "Failed to parse content. Content: {content}", content);
+                    _logger.LogError(ex, "Failed to parse content. Content: {0}", content);
                     return BadRequest("Invalid content format. Expected base64 encoded string.");
                 }
 
