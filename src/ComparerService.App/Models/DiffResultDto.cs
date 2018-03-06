@@ -3,6 +3,9 @@ using System.Collections.ObjectModel;
 
 namespace ComparerService.App.Models
 {
+    /// <summary>
+    /// Represent diff result.
+    /// </summary>
     public class DiffResultDto
     {
         /// <summary>

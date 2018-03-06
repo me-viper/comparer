@@ -10,6 +10,7 @@ namespace ComparerService.App.Services
     {
         public DiffResult SimpleDiff(string left, string right)
         {
+            // Considering if both strings are null they are equal.
             if (left == null && right == null)
                 return DiffResult.Equal();
 
