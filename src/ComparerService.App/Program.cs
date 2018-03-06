@@ -26,6 +26,7 @@ namespace ComparerService.App
         public static IWebHost BuildWebHost(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
                 .ConfigureServices(p => p.AddAutofac())
+                .ConfigureLogging((context, logging) => logging.AddConsole(p => p.IncludeScopes = true).AddDebug())
                 .UseStartup<Startup>()
                 .Build();
     }
