@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Autofac;
 
 using ComparerService.App.Services;
+using ComparerService.App.Utility;
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -58,7 +59,9 @@ namespace ComparerService.App
             {
                 app.UseDeveloperExceptionPage();
             }
-            
+
+            app.UseErrorLogging();
+
             app.UseSwagger();
             app.UseSwaggerUI(p => p.SwaggerEndpoint("/swagger/v1/swagger.json", "Comparer API v1"));
 
