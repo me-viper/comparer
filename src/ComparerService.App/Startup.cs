@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 
 using Autofac;
 
+using ComparerService.App.Services;
+
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -42,7 +44,9 @@ namespace ComparerService.App
         }
 
         public void ConfigureContainer(ContainerBuilder builder)
-        { }
+        {
+            builder.RegisterType<InMemoryRepository>().As<IComparisonContentRepository>().SingleInstance();
+        }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
@@ -51,7 +55,7 @@ namespace ComparerService.App
             {
                 app.UseDeveloperExceptionPage();
             }
-
+            
             app.UseSwagger();
             app.UseSwaggerUI(p => p.SwaggerEndpoint("/swagger/v1/swagger.json", "Comparer API v1"));
 
