@@ -3,8 +3,7 @@
     public enum DiffType
     {
         Equal,
-        LeftGreaterThanRight,
-        RightGreateThanLeft,
+        SizeDoesNotMatch,
         Diff
     }
 }

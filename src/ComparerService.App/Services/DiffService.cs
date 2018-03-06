@@ -10,23 +10,19 @@ namespace ComparerService.App.Services
     {
         public DiffResult SimpleDiff(string left, string right)
         {
-            if (left == null)
-                throw new ArgumentNullException(nameof(left));
+            if (left == null && right == null)
+                return DiffResult.Equal();
 
-            if (right == null)
-                throw new ArgumentNullException(nameof(right));
+            if (left == null || right == null)
+                return DiffResult.SizeDoesNotMatch();
 
-            if (left.Length > right.Length)
-                return new DiffResult(DiffType.LeftGreaterThanRight);
+            if (left.Length != right.Length)
+                return DiffResult.SizeDoesNotMatch();
             
-            if (right.Length > left.Length)
-                return new DiffResult(DiffType.RightGreateThanLeft);
-            
-            // Equal.
+            // Left and right have equal size. Calculating diff.
             var diffs = CalculateSimpleDiff(left, right);
-            var outcome = diffs.Count == 0 ? DiffType.Equal : DiffType.Diff;
 
-            return new DiffResult(outcome, diffs);
+            return diffs.Count == 0 ? DiffResult.Equal() : DiffResult.Diff(diffs);
         }
 
         private static IReadOnlyCollection<Diff> CalculateSimpleDiff(string left, string right)
@@ -39,12 +35,14 @@ namespace ComparerService.App.Services
             {
                 if (left[i] != right[i])
                 {
+                    // For this point strings are different.
                     if (currentDiff == null)
                         currentDiff = new Diff {Offset = i + 1};
 
                     continue;
                 }
 
+                // Strings are different up to this point.
                 if (currentDiff != null)
                 {
                     currentDiff.Length = i - currentDiff.Offset + 1;

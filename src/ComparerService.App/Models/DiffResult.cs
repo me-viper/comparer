@@ -12,19 +12,33 @@ namespace ComparerService.App.Models
         public DiffType Type { get; }
         public IEnumerable<Diff> Diffs { get; }
 
-        public DiffResult(DiffType type)
+        private DiffResult(DiffType type, IEnumerable<Diff> diffs = null)
         {
             Type = type;
-            Diffs = Enumerable.Empty<Diff>();
+            Diffs = diffs ?? Enumerable.Empty<Diff>();
         }
 
-        public DiffResult(DiffType type, IEnumerable<Diff> diffs)
+        public static DiffResult Equal()
+        {
+            return new DiffResult(DiffType.Equal);
+        }
+
+        public static DiffResult SizeDoesNotMatch()
+        {
+            return new DiffResult(DiffType.SizeDoesNotMatch);
+        }
+
+        public static DiffResult Diff(IEnumerable<Diff> diffs)
         {
             if (diffs == null)
                 throw new ArgumentNullException(nameof(diffs));
 
-            Type = type;
-            Diffs = diffs;
+            var tmpDiffs = diffs.ToArray();
+
+            if (!tmpDiffs.Any())
+                throw new ArgumentException("Diffs collection is empty", nameof(diffs));
+
+            return new DiffResult(DiffType.Diff, tmpDiffs);
         }
 
         public bool Equals(DiffResult other)

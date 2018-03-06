@@ -15,6 +15,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
+using Newtonsoft.Json;
+
 using Swashbuckle.AspNetCore.Swagger;
 
 namespace ComparerService.App
@@ -40,11 +42,12 @@ namespace ComparerService.App
                     p.IncludeXmlComments(docPath);
                 });
 
-            services.AddMvc();
+            services.AddMvc().AddJsonOptions(p => p.SerializerSettings.Formatting = Formatting.Indented);
         }
 
         public void ConfigureContainer(ContainerBuilder builder)
         {
+            builder.RegisterType<DiffService>().As<IDiffService>();
             builder.RegisterType<InMemoryRepository>().As<IComparisonContentRepository>().SingleInstance();
         }
 

@@ -1,39 +1,149 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
+using ComparerService.App.Models;
+using ComparerService.App.Services;
+
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace ComparerService.App.Controllers
 {
     [Route("v1/[controller]")]
+    [Produces("application/json")]
     public class DiffController : Controller
     {
+        private readonly IDiffService _diffService;
+        private readonly IComparisonContentRepository _contentRepository;
+        private readonly ILogger<DiffController> _logger;
+
+        public DiffController(
+            IDiffService diffService, 
+            IComparisonContentRepository contentRepository,
+            ILogger<DiffController> logger)
+        {
+            if (diffService == null)
+                throw new ArgumentNullException(nameof(diffService));
+
+            if (contentRepository == null)
+                throw new ArgumentNullException(nameof(contentRepository));
+
+            _diffService = diffService;
+            _contentRepository = contentRepository;
+            _logger = logger ?? NullLogger<DiffController>.Instance;
+        }
+
         /// <summary>
         /// Sets left side of comparison.
         /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
+        /// <param name="id">Comparison ID</param>
+        /// <param name="content">Content to compare</param>
+        /// <remarks>
+        /// Sample request:
+        ///
+        ///     POST /999/left
+        ///     {
+        ///         "content": "dGhpcyBpcyBzYW1wbGUgdGV4dA=="
+        ///     }
+        ///
+        /// </remarks>
         [HttpPost]
         [Route("{id}/left")]
-        public Task<IActionResult> SetLeft([FromRoute] string id)
+        public async Task<IActionResult> SetLeft([FromRoute] string id, [FromBody] string content)
         {
-            return Task.FromResult<IActionResult>(Ok());
+            return await SetComparisonContent(id, content, ComparisonSide.Left).ConfigureAwait(false);
         }
 
+        /// <summary>
+        /// Sets right side of comparison.
+        /// </summary>
+        /// <param name="id">Comparison ID</param>
+        /// <param name="content">Content to compare</param>
+        /// <remarks>
+        /// Sample request:
+        ///
+        ///     POST /999/right
+        ///     {
+        ///         "content": "dGhpcyBpcyBzYW1wbGUgdGV4dA=="
+        ///     }
+        ///
+        /// </remarks>
         [HttpPost]
         [Route("{id}/right")]
-        public Task<IActionResult> SetRight([FromRoute] string id)
+        public async Task<IActionResult> SetRight([FromRoute] string id, [FromBody] string content)
         {
-            return Task.FromResult<IActionResult>(Ok());
+            return await SetComparisonContent(id, content, ComparisonSide.Right).ConfigureAwait(false);
         }
 
+        /// <summary>
+        /// Compares left and right.
+        /// </summary>
+        /// <param name="id">Copmarison ID</param>
+        /// <returns>Comparison reuslt</returns>
+        /// <response code = "200">Returns diff result</response>
+        /// <response code = "204">No contents to compare for specified ComparisonID</response>
         [HttpGet]
         [Route("{id}")]
-        public Task<IActionResult> GetDiff([FromRoute] string id)
+        [ProducesResponseType(typeof(DiffResultDto), 200)]
+        public async Task<IActionResult> GetDiff([FromRoute] string id)
         {
-            return Task.FromResult<IActionResult>(Ok());
+            IDisposable loggingScope = null;
+
+            try
+            {
+                loggingScope = _logger.BeginScope("ComparisonID {id}", id);
+
+                var content = await _contentRepository.GetContent(id).ConfigureAwait(false);
+
+                if (content == null)
+                    return NoContent();
+
+                var diffResult = _diffService.SimpleDiff(content.Left, content.Right);
+                var result = new DiffResultDto { Id = id, DiffType = diffResult.Type, Diffs = diffResult.Diffs };
+
+                return new ObjectResult(result);
+            }
+            finally
+            {
+                loggingScope?.Dispose();
+            }
+        }
+
+        private async Task<IActionResult> SetComparisonContent(string id, string content, ComparisonSide side)
+        {
+            IDisposable loggingScope = null;
+
+            try
+            {
+                loggingScope = _logger.BeginScope("ComparisonID: {id}; Side: {side}", id, side);
+                _logger.LogInformation("Setting comparison content");
+
+                byte[] buffer;
+
+                try
+                {
+                    buffer = Convert.FromBase64String(content);
+                }
+                catch (FormatException ex)
+                {
+                    _logger.LogError(ex, "Failed to parse content. Content: {content}", content);
+                    return BadRequest("Invalid content format. Expected base64 encoded string.");
+                }
+
+                var decodedContent = Encoding.UTF8.GetString(buffer);
+
+                await _contentRepository.SetContent(id, decodedContent, side).ConfigureAwait(false);
+
+                return Ok();
+            }
+            finally
+            {
+                loggingScope?.Dispose();
+            }
         }
     }
 }
