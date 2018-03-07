@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
 
 using Newtonsoft.Json;
@@ -26,12 +27,16 @@ namespace ComparerService.App
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        private ILoggerFactory _loggerFactory;
+
+        public Startup(IConfiguration configuration, ILoggerFactory loggerFacotry)
         {
             Configuration = configuration;
+            _loggerFactory = loggerFacotry ?? NullLoggerFactory.Instance;
         }
 
         public IConfiguration Configuration { get; }
+
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -60,10 +65,14 @@ namespace ComparerService.App
                     redisConnectionString = Configuration["redis.endpoint"];
 
                 builder.Register<IRedisClientsManager>(p => new BasicRedisClientManager(redisConnectionString));
+                builder.RegisterType<RedisRepository>().As<IComparisonContentRepository>();
+
+                _loggerFactory.CreateLogger<Startup>().LogInformation("Using Redis storage with endpoint {0}", redisConnectionString);
             }
             else
             {
-                builder.RegisterType<RedisRepository>().As<IComparisonContentRepository>();
+                _loggerFactory.CreateLogger<Startup>().LogInformation("Using in-memory storage");
+                builder.RegisterType<InMemoryRepository>().As<IComparisonContentRepository>().SingleInstance();
             }
         }
 

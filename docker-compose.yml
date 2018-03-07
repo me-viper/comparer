@@ -9,13 +9,13 @@ services:
       dockerfile: src/ComparerService.App/Dockerfile
     environment: 
         - STORE=redis
-        - REDIS.ENDPOINT=redis://localhost:6379
+        - REDIS.ENDPOINT=redis://diff.data:6379
     ports: 
-      - 8080:80
+      - "8080:80"
     depends_on:
       - diff.data
 
   diff.data:
     image: redis
     ports: 
-      - 6379:6379
+      - "6379:6379"
