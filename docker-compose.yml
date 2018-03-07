@@ -1,0 +1,21 @@
+version: '3.3'
+
+services:
+
+  diff.api:
+    image: comparerapp/diff.api:${TAG:-latest}
+    build:
+      context: .
+      dockerfile: src/ComparerService.App/Dockerfile
+    environment: 
+        - STORE=redis
+        - REDIS.ENDPOINT=redis://localhost:6379
+    ports: 
+      - 8080:80
+    depends_on:
+      - diff.data
+
+  diff.data:
+    image: redis
+    ports: 
+      - 6379:6379
