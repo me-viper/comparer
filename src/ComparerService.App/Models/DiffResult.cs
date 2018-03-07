@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 
-using ComparerService.App.Services;
 using ComparerService.App.Utility;
+
+using JetBrains.Annotations;
 
 namespace ComparerService.App.Models
 {
@@ -28,7 +29,7 @@ namespace ComparerService.App.Models
             return new DiffResult(DiffType.SizeDoesNotMatch);
         }
 
-        public static DiffResult Diff(IEnumerable<DiffSpan> diffs)
+        public static DiffResult Diff([ItemNotNull] IEnumerable<DiffSpan> diffs)
         {
             if (diffs == null)
                 throw new ArgumentNullException(nameof(diffs));

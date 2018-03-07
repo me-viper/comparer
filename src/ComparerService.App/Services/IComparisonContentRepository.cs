@@ -4,12 +4,15 @@ using System.Threading.Tasks;
 
 using ComparerService.App.Models;
 
+using JetBrains.Annotations;
+
 namespace ComparerService.App.Services
 {
     public interface IComparisonContentRepository
     {
-        Task<ComparisonContent> GetContent(string id);
+        [CanBeNull]
+        Task<ComparisonContent> GetContent([NotNull] string id);
 
-        Task SetContent(string id, string content, ComparisonSide side);
+        Task SetContent([NotNull] string id, [CanBeNull] string content, ComparisonSide side);
     }
 }
