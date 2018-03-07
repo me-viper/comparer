@@ -1,4 +1,5 @@
-﻿using System.Collections.Concurrent;
+﻿using System;
+using System.Collections.Concurrent;
 using System.Threading.Tasks;
 
 using ComparerService.App.Models;
@@ -11,6 +12,9 @@ namespace ComparerService.App.Services
 
         public async Task SetContent(string id, string content, ComparisonSide side)
         {
+            if (string.IsNullOrWhiteSpace(id))
+                throw new ArgumentException("Value can't be null or empty string", nameof(id));
+
             var comparisonContent = new ComparisonContent { Id = id };
             Set(comparisonContent, content, side);
 
@@ -19,6 +23,9 @@ namespace ComparerService.App.Services
 
         public async Task<ComparisonContent> GetContent(string id)
         {
+            if (string.IsNullOrWhiteSpace(id))
+                throw new ArgumentException("Value can't be null or empty string", nameof(id));
+
             if (_store.TryGetValue(id, out var comparisonContent))
                 return comparisonContent;
 

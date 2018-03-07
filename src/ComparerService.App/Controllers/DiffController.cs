@@ -37,13 +37,6 @@ namespace ComparerService.App.Controllers
             _logger = logger ?? NullLogger<DiffController>.Instance;
         }
 
-        [HttpGet]
-        [Route("/")]
-        public string Test()
-        {
-            return "Hi";
-        }
-
         /// <summary>
         /// Sets left side of comparison.
         /// </summary>
@@ -131,6 +124,9 @@ namespace ComparerService.App.Controllers
 
         private async Task<IActionResult> SetComparisonContent(string id, string content, ComparisonSide side)
         {
+            if (content == null)
+                return BadRequest();
+
             IDisposable loggingScope = null;
 
             try
