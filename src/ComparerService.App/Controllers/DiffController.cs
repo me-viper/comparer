@@ -37,11 +37,18 @@ namespace ComparerService.App.Controllers
             _logger = logger ?? NullLogger<DiffController>.Instance;
         }
 
+        [HttpGet]
+        [Route("/")]
+        public string Test()
+        {
+            return "Hi";
+        }
+
         /// <summary>
         /// Sets left side of comparison.
         /// </summary>
         /// <param name="id">Comparison ID</param>
-        /// <param name="content">Content to compare</param>
+        /// <param name="content">Base64 encoded content to compare</param>
         /// <remarks>
         /// Sample request:
         ///
@@ -62,7 +69,7 @@ namespace ComparerService.App.Controllers
         /// Sets right side of comparison.
         /// </summary>
         /// <param name="id">Comparison ID</param>
-        /// <param name="content">Content to compare</param>
+        /// <param name="content">Base64 encoded content to compare</param>
         /// <remarks>
         /// Sample request:
         ///
@@ -109,8 +116,10 @@ namespace ComparerService.App.Controllers
                 var diffResult = _diffService.SimpleDiff(content.Left, content.Right);
 
                 _logger.LogDebug("Comparision result: {0}", diffResult.ToString());
-
+                
                 var result = new DiffResultDto { Id = id, DiffType = diffResult.Type, Diffs = diffResult.Diffs };
+
+                _logger.LogInformation("Comparison completed successfully");
 
                 return new ObjectResult(result);
             }
@@ -144,6 +153,8 @@ namespace ComparerService.App.Controllers
                 var decodedContent = Encoding.UTF8.GetString(buffer);
 
                 await _contentRepository.SetContent(id, decodedContent, side).ConfigureAwait(false);
+
+                _logger.LogInformation("Content set");
 
                 return Ok();
             }
