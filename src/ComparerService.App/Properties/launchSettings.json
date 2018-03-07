@@ -10,15 +10,16 @@
   "profiles": {
     "IIS Express": {
       "commandName": "IISExpress",
-      "launchBrowser": true,
       "launchUrl": "swagger",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "redis.endpoint": "localhost",
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "STORE": "redis"
       }
     },
     "ComparerService.App": {
       "commandName": "Project",
-      "launchBrowser": true,
+      "commandLineArgs": "--store \"redis\"",
       "launchUrl": "api/values",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"

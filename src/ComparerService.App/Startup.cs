@@ -18,6 +18,8 @@ using Microsoft.Extensions.Options;
 
 using Newtonsoft.Json;
 
+using ServiceStack.Redis;
+
 using Swashbuckle.AspNetCore.Swagger;
 
 namespace ComparerService.App
@@ -49,7 +51,20 @@ namespace ComparerService.App
         public void ConfigureContainer(ContainerBuilder builder)
         {
             builder.RegisterType<DiffService>().As<IDiffService>();
-            builder.RegisterType<InMemoryRepository>().As<IComparisonContentRepository>().SingleInstance();
+
+            if (string.Equals(Configuration["store"], "redis", StringComparison.OrdinalIgnoreCase))
+            {
+                var redisConnectionString = "redis://localhost:6379";
+
+                if (!string.IsNullOrWhiteSpace(Configuration["redis.endpoint"]))
+                    redisConnectionString = Configuration["redis.endpoint"];
+
+                builder.Register<IRedisClientsManager>(p => new BasicRedisClientManager(redisConnectionString));
+            }
+            else
+            {
+                builder.RegisterType<RedisRepository>().As<IComparisonContentRepository>();
+            }
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -1,4 +1,6 @@
-﻿namespace ComparerService.App.Models
+﻿using System;
+
+namespace ComparerService.App.Models
 {
     public class ComparisonContent
     {

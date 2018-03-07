@@ -23,11 +23,18 @@ namespace ComparerService.App
             BuildWebHost(args).Run();
         }
 
-        public static IWebHost BuildWebHost(string[] args) =>
-            WebHost.CreateDefaultBuilder(args)
+        public static IWebHost BuildWebHost(string[] args)
+        {
+            var configuration = new ConfigurationBuilder()
+                .AddCommandLine(args)
+                .Build();
+
+            return WebHost.CreateDefaultBuilder(args)
                 .ConfigureServices(p => p.AddAutofac())
+                .UseConfiguration(configuration)
                 .ConfigureLogging((context, logging) => logging.AddConsole(p => p.IncludeScopes = true).AddDebug())
                 .UseStartup<Startup>()
                 .Build();
+        }
     }
 }
