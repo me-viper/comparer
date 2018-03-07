@@ -5,7 +5,7 @@ namespace ComparerService.App.Models
     /// <summary>
     /// Represents single instance of contents difference.
     /// </summary>
-    public class Diff : IEquatable<Diff>
+    public class DiffSpan : IEquatable<DiffSpan>
     {
         /// <summary>
         /// Position startng from which contents are different.
@@ -17,7 +17,17 @@ namespace ComparerService.App.Models
         /// </summary>
         public int Length { get; set; }
 
-        public bool Equals(Diff other)
+        public DiffSpan()
+        {
+        }
+
+        public DiffSpan(int offset, int length)
+        {
+            Offset = offset;
+            Length = length;
+        }
+
+        public bool Equals(DiffSpan other)
         {
             if (other == null)
                 return false;

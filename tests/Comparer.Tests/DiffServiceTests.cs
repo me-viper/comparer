@@ -45,21 +45,21 @@ namespace Comparer.Tests
                     .Returns(DiffResult.Equal());
 
                 yield return new TestCaseData("aaa", "bbb")
-                    .Returns(DiffResult.Diff(new[] { new Diff { Offset = 1, Length = 3 } }));
+                    .Returns(DiffResult.Diff(new[] { new DiffSpan { Offset = 1, Length = 3 } }));
 
                 yield return new TestCaseData("aaa", "baa")
-                    .Returns(DiffResult.Diff(new[] { new Diff { Offset = 1, Length = 1 } }));
+                    .Returns(DiffResult.Diff(new[] { new DiffSpan { Offset = 1, Length = 1 } }));
 
                 yield return new TestCaseData("aaa bbb ccc", "aaa xxx ccc")
-                    .Returns(DiffResult.Diff(new[] { new Diff { Offset = 5, Length = 3 } }));
+                    .Returns(DiffResult.Diff(new[] { new DiffSpan { Offset = 5, Length = 3 } }));
 
                 yield return new TestCaseData("aaa bbb cccq", "aaa xxx cccz")
                     .Returns(
                         DiffResult.Diff(
                             new[]
                             {
-                                new Diff { Offset = 5, Length = 3 },
-                                new Diff { Offset = 12, Length = 1 },
+                                new DiffSpan { Offset = 5, Length = 3 },
+                                new DiffSpan { Offset = 12, Length = 1 },
                             })
                         );
             }

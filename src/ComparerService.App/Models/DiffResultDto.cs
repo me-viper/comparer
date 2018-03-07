@@ -21,6 +21,6 @@ namespace ComparerService.App.Models
         /// <summary>
         /// Detected diffs.
         /// </summary>
-        public IEnumerable<Diff> Diffs { get; set; }
+        public IEnumerable<DiffSpan> Diffs { get; set; }
     }
 }

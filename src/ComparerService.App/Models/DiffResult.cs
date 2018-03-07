@@ -10,12 +10,12 @@ namespace ComparerService.App.Models
     public class DiffResult : IEquatable<DiffResult>
     {
         public DiffType Type { get; }
-        public IEnumerable<Diff> Diffs { get; }
+        public IEnumerable<DiffSpan> Diffs { get; }
 
-        private DiffResult(DiffType type, IEnumerable<Diff> diffs = null)
+        private DiffResult(DiffType type, IEnumerable<DiffSpan> diffs = null)
         {
             Type = type;
-            Diffs = diffs ?? Enumerable.Empty<Diff>();
+            Diffs = diffs ?? Enumerable.Empty<DiffSpan>();
         }
 
         public static DiffResult Equal()
@@ -28,7 +28,7 @@ namespace ComparerService.App.Models
             return new DiffResult(DiffType.SizeDoesNotMatch);
         }
 
-        public static DiffResult Diff(IEnumerable<Diff> diffs)
+        public static DiffResult Diff(IEnumerable<DiffSpan> diffs)
         {
             if (diffs == null)
                 throw new ArgumentNullException(nameof(diffs));

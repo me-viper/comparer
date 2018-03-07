@@ -4,9 +4,9 @@ using ComparerService.App.Models;
 
 namespace ComparerService.App.Utility
 {
-    public class DiffEqualityComparer : IEqualityComparer<Diff>
+    public class DiffEqualityComparer : IEqualityComparer<DiffSpan>
     {
-        public bool Equals(Diff x, Diff y)
+        public bool Equals(DiffSpan x, DiffSpan y)
         {
             if (x == null && y == null)
                 return true;
@@ -17,7 +17,7 @@ namespace ComparerService.App.Utility
             return x.Equals(y);
         }
 
-        public int GetHashCode(Diff obj)
+        public int GetHashCode(DiffSpan obj)
         {
             if (obj == null)
                 return 0;

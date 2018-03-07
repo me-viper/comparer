@@ -26,37 +26,37 @@ namespace ComparerService.App.Services
             return diffs.Count == 0 ? DiffResult.Equal() : DiffResult.Diff(diffs);
         }
 
-        private static IReadOnlyCollection<Diff> CalculateSimpleDiff(string left, string right)
+        private static IReadOnlyCollection<DiffSpan> CalculateSimpleDiff(string left, string right)
         {
-            var result = new List<Diff>();
+            var result = new List<DiffSpan>();
 
-            Diff currentDiff = null;
+            DiffSpan currentDiffSpan = null;
 
             for (var i = 0; i < left.Length; i++)
             {
                 if (left[i] != right[i])
                 {
                     // For this point strings are different.
-                    if (currentDiff == null)
-                        currentDiff = new Diff {Offset = i + 1};
+                    if (currentDiffSpan == null)
+                        currentDiffSpan = new DiffSpan {Offset = i + 1};
 
                     continue;
                 }
 
                 // Strings are different up to this point.
-                if (currentDiff != null)
+                if (currentDiffSpan != null)
                 {
-                    currentDiff.Length = i - currentDiff.Offset + 1;
-                    result.Add(currentDiff);
-                    currentDiff = null;
+                    currentDiffSpan.Length = i - currentDiffSpan.Offset + 1;
+                    result.Add(currentDiffSpan);
+                    currentDiffSpan = null;
                 }
             }
 
             // Handling case when strings differ at the end.
-            if (currentDiff != null)
+            if (currentDiffSpan != null)
             {
-                currentDiff.Length = left.Length - currentDiff.Offset + 1;
-                result.Add(currentDiff);
+                currentDiffSpan.Length = left.Length - currentDiffSpan.Offset + 1;
+                result.Add(currentDiffSpan);
             }
 
             return result;
