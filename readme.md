@@ -9,7 +9,7 @@ Service has [Swagger](https://swagger.io/) documentation enabled. To view it nav
 * To run app from binaries you need [.NET Core Runtime 2.0.5](https://www.microsoft.com/net/download/Windows/run) installed.
 * This configuraiton uses **in-memory** storage by default.
 
-1. Get latest binaries from the [relases]() page.
+1. Get latest binaries from the [relases](https://github.com/me-viper/comparer/releases) page.
 2. Unpack archive.
 3. Run `dotnet .\ComparerService.App.dll --urls="http://localhost:55605"` for the project root.
 4. Navigate to http://localhost:55605/swagger
