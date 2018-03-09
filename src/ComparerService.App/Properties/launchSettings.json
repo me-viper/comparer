@@ -14,7 +14,7 @@
       "environmentVariables": {
         "redis.endpoint": "localhost",
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "STORE": "redis"
+        "XSTORE": "redis"
       }
     },
     "ComparerService.App": {
