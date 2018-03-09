@@ -10,7 +10,14 @@ namespace ComparerService.App.Models
 {
     public class DiffResult : IEquatable<DiffResult>
     {
+        /// <summary>
+        /// Comparison outcome.
+        /// </summary>
         public DiffType Type { get; }
+
+        /// <summary>
+        /// Enumeration of differences.
+        /// </summary>
         public IEnumerable<DiffSpan> Diffs { get; }
 
         private DiffResult(DiffType type, IEnumerable<DiffSpan> diffs = null)
