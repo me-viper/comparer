@@ -38,7 +38,7 @@ Script will build project, start local server (by default at http://localhost:55
 2. Run `docker.ps1` from the project root.
 3. Navigate to http://localhost:8080/swagger
 
-### Configuration options
+### Command line configuration options
 `--urls="BASE URL"` - specifies base url for the service.
 > Example: `--urls="http://localhost:8080"`
 
