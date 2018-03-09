@@ -64,3 +64,6 @@ Sets right side of comparison.
 Compares left and right.
 * `id` *(path)* - comparison ID.
 > Example: `curl -X GET "http://localhost/v1/Diff/123" -H "accept: application/json"`
+
+## Issue and improvements
+Please see open [issues](https://github.com/me-viper/comparer/issues) page.
