@@ -10,6 +10,8 @@ namespace ComparerService.App.Services
 {
     public interface IComparisonContentRepository
     {
+        int MaxLength { get; }
+
         [CanBeNull]
         Task<ComparisonContent> GetContent([NotNull] string id);
 

@@ -165,6 +165,27 @@ namespace Comparer.Tests
         }
 
         [Test]
+        public async Task ToLargeContentTest()
+        {
+            var client = _server.CreateClient();
+            var postContent = new StringContent(
+                JsonConvert.SerializeObject(new string(Enumerable.Repeat('a', 10000).ToArray())), 
+                Encoding.UTF8, 
+                "application/json"
+                );
+
+            var postResposnseLeft = await client.PostAsync("/v1/diff/1/left", postContent).ConfigureAwait(false);
+
+            Assert.That(!postResposnseLeft.IsSuccessStatusCode);
+            Assert.That(postResposnseLeft.StatusCode, Is.EqualTo(HttpStatusCode.RequestEntityTooLarge));
+
+            var postResposnseRight = await client.PostAsync("/v1/diff/1/left", postContent).ConfigureAwait(false);
+
+            Assert.That(!postResposnseRight.IsSuccessStatusCode);
+            Assert.That(postResposnseRight.StatusCode, Is.EqualTo(HttpStatusCode.RequestEntityTooLarge));
+        }
+
+        [Test]
         public async Task InvalidContentRightSideTest()
         {
             var client = _server.CreateClient();

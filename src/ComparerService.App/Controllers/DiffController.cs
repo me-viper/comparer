@@ -45,12 +45,15 @@ namespace ComparerService.App.Controllers
         /// <remarks>
         /// Sample request:
         ///
-        ///     POST /999/left
+        ///     POST /v1/diff/999/left
         ///     {
         ///         "content": "dGhpcyBpcyBzYW1wbGUgdGV4dA=="
         ///     }
         ///
         /// </remarks>
+        /// <response code = "200">Content set</response>
+        /// <response code = "400">Invalid content</response>
+        /// <response code = "413">Content is too large</response>
         [HttpPost]
         [Route("{id}/left")]
         public async Task<IActionResult> SetLeft([FromRoute] string id, [FromBody] string content)
@@ -66,12 +69,15 @@ namespace ComparerService.App.Controllers
         /// <remarks>
         /// Sample request:
         ///
-        ///     POST /999/right
+        ///     POST /v1/diff/999/left
         ///     {
         ///         "content": "dGhpcyBpcyBzYW1wbGUgdGV4dA=="
         ///     }
         ///
         /// </remarks>
+        /// <response code = "200">Content set</response>
+        /// <response code = "400">Invalid content</response>
+        /// <response code = "413">Content is too large</response>
         [HttpPost]
         [Route("{id}/right")]
         public async Task<IActionResult> SetRight([FromRoute] string id, [FromBody] string content)
@@ -128,6 +134,9 @@ namespace ComparerService.App.Controllers
                 return BadRequest();
 
             IDisposable loggingScope = null;
+
+            if (content.Length > _contentRepository.MaxLength)
+                return StatusCode(413);
 
             try
             {
