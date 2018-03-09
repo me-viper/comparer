@@ -31,6 +31,9 @@ namespace ComparerService.App.Services
                 var left = client.Get<string>($"{id}:{ComparisonSide.Left}");
                 var right = client.Get<string>($"{id}:{ComparisonSide.Right}");
 
+                if (left == null && right == null)
+                    return Task.FromResult<ComparisonContent>(null);
+
                 return Task.FromResult(new ComparisonContent {Id = id, Left = left, Right = right});
             }
         }
