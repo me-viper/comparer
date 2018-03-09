@@ -13,8 +13,7 @@
       "launchUrl": "swagger",
       "environmentVariables": {
         "redis.endpoint": "localhost",
-        "ASPNETCORE_ENVIRONMENT": "Development",
-        "XSTORE": "redis"
+        "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
     "ComparerService.App": {
