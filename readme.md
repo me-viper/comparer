@@ -10,7 +10,9 @@ Service has [Swagger](https://swagger.io/) documentation enabled. To view it nav
 * This configuraiton uses **in-memory** storage by default.
 
 1. Get latest binaries from the [relases]() page.
-2.
+2. Unpack archive.
+3. Run `dotnet .\ComparerService.App.dll --urls="http://localhost:55605"` for the project root.
+4. Navigate to http://localhost:55605/swagger
 
 ### Run for the source code
 * To run app from the souce code you need [.NET Core SDK 2.1.4](https://www.microsoft.com/net/download/windows) installed.
@@ -19,12 +21,13 @@ Service has [Swagger](https://swagger.io/) documentation enabled. To view it nav
 1. Clone git repository `git clone https://github.com/me-viper/comparer.git`.
 2. Run `run.ps1` from the project root.
 
+Script will build project, start local server (by default at http://localhost:55603) and navigate your default browser to http://localhost:55603/swagger.
+
 ### Run unit and integration tests
 * To run tests you need [.NET Core SDK 2.1.4](https://www.microsoft.com/net/download/windows) installed.
 1. Clone git repository `git clone https://github.com/me-viper/comparer.git`.
 2. Run `dotnet test .\tests\Comparer.Tests\` from the project root.
 
-This will build proeject, start local server (by default at http://localhost:55603) and navigate your default browser to http://localhost:55603/swagger.
 ### Run in Docker
 * To run app in docker container you need to have [Docker](https://store.docker.com/editions/community/docker-ce-desktop-windows) for Windows installed.
 * App configuration for docker uses Linux. To run it you need to have your Docker configured to use Linux containers 
